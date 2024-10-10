@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chickeez</title>
+    <link rel="icon" href="logo1.jpeg" type="image/png"> <!-- Replace with your logo -->
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <style>
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Transparent Logo Container */
+        .logo-container {
+            background-image: url('logo1.jpeg'); /* Replace with your logo */
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 50vh;
+            width: 50vh;
+            margin: 0 auto;
+            /* background-color: rgba(0, 0, 0, 0.5); Semi-transparent background */
+        }
+
+        /* Form & Social Media Styling */
+        .centered-content {
+            text-align: center;
+            color: white;
+        }
+
+        .social-media i {
+            margin: 0 15px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Video Background -->
+<div class="video-background">
+    <img src="burger.png" id="placeholderImage" alt="Background" />
+
+    <video id="backgroundVideo" autoplay muted loop style="display: none;">
+        <source src="shawarma.mp4" type="video/mp4"> 
+        Your browser does not support HTML5 video.
+    </video>
+</div>
+
+<!-- Main Content -->
+<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+    <!-- Logo Container -->
+    <div class="logo-container"></div>
+
+    <!-- Centered Text and Form -->
+    <div class="centered-content mt-3">
+        <h1>Chickeez</h1>
+        <p>Welcome to Chickeez! Enter your email below:</p>
+        
+        <!-- Form -->
+                <form  id="emailForm" >
+                    <div class="form-group mb-2">
+                        <input type="text" name="email" class="form-control" id="emailInput" placeholder="Your Email">
+                    </div>
+                    <button type="submit" class="btn btn-danger mb-2 ml-2">Submit</button>
+        
+                </form>
+            </div>
+            <!-- <button type="button" class="btn btn-danger mb-2 ml-2" onclick="submitEmail()">Submit</button> -->
+        </form>
+
+        <!-- Social Media Links -->
+        <div class="social-media mt-3">
+            <a href="https://facebook.com/yourprofile" target="_blank"><i class="fab fa-facebook fa-2x"></i></a>
+            <a href="https://instagram.com/yourprofile" target="_blank"><i class="fab fa-instagram fa-2x"></i></a>
+            <a href="https://tiktok.com/@yourprofile" target="_blank"><i class="fab fa-tiktok fa-2x"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Email Submission and Video Cycling -->
+<script>
+        // Wait for the page to fully load
+        window.addEventListener('load', function() {
+        var video = document.getElementById('backgroundVideo');
+        var placeholderImage = document.getElementById('placeholderImage');
+
+        // Load the video in the background
+        video.addEventListener('canplaythrough', function() {
+            // Once the video is ready, hide the image and show the video
+            placeholderImage.style.display = 'none';
+            video.style.display = 'block';
+            video.play();  // Autoplay video when it's ready
+        });
+    });
+    document.getElementById('emailForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        
+        const emailInput = document.getElementById('emailInput').value;
+        const responseMessage = document.getElementById('responseMessage');
+
+        if (!validateEmail(emailInput)) {
+            responseMessage.innerHTML = 'Please enter a valid email address.';
+            responseMessage.style.color = '#dc3545'; // Error red
+            return;
+        }
+
+        // Send the email using AJAX
+        const formData = new FormData();
+        formData.append('email', emailInput);
+
+        fetch('https://script.google.com/macros/s/AKfycbwTWxUbA9QSiNTCgR-lpoA1Hi_JERYYYmGwL2S-b2l5YsE8TAUvGVJrpk5GghP1muXycg/exec', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Show success message
+            responseMessage.innerHTML = 'Successfully sent!';
+            responseMessage.style.color = '#28a745'; // Success green
+        })
+        .catch(error => {
+            // Show error message
+            responseMessage.innerHTML = 'Error: Please try again later.';
+            responseMessage.style.color = '#dc3545'; // Error red
+        });
+    });
+    function submitEmail() {
+        const email = document.getElementById('emailInput').value;
+        if (validateEmail(email)) {
+            alert('Email submitted: ' + email);
+        } else {
+            alert('Please enter a valid email address.');
+        }
+    }
+
+    function validateEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+    }
+
+    // Array of video sources
+    const videos = [
+        "shawarma.mp4",
+        "burger.mp4",
+        "pizza.mp4" // Add more videos here
+    ];
+
+    let currentVideoIndex = 0;
+
+    // Function to cycle through videos
+    function cycleVideos() {
+        currentVideoIndex = (currentVideoIndex + 1) % videos.length;
+        const videoElement = document.getElementById('backgroundVideo');
+        videoElement.src = videos[currentVideoIndex];
+        videoElement.load();
+        videoElement.play();
+    }
+
+    // Change video every 6 seconds
+    setInterval(cycleVideos, 6000);
+</script>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
